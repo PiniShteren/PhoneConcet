@@ -146,7 +146,8 @@ p {
 
 @media only screen and (max-width: 900px) {
   .main-con {
-    flex-grow: 1;
+    /* flex-grow: 1; */
+    width: 100%;
   }
   #logo {
     background-color: red;
