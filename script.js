@@ -15,12 +15,7 @@ let bookNames = [
     firstName: 'Yosi',
     lastName: 'Cohen',
     phoneNumber: '0549574345',
-    adress: {
-      street: 'HariGolan',
-      number: '3',
-      city: 'Ashdod',
-      country: 'Israel',
-    },
+    adress: 'Isreal',
     email: 'yosi@gmail.com',
     description: '',
   },
@@ -28,12 +23,7 @@ let bookNames = [
     firstName: 'david',
     lastName: 'Cohen',
     phoneNumber: '0549574345',
-    adress: {
-      street: 'HariGolan',
-      nimber: '7',
-      city: 'Ashdod',
-      country: 'Israel',
-    },
+    adress: 'Isreal',
     email: 'yosi@gmail.com',
     description: '',
   },
@@ -41,12 +31,7 @@ let bookNames = [
     firstName: 'uri',
     lastName: 'Cohen',
     phoneNumber: '0549574345',
-    adress: {
-      street: 'HariGolan',
-      number: '15',
-      city: 'Ashdod',
-      country: 'Israel',
-    },
+    adress: 'Isreal',
     email: 'yosi@gmail.com',
     description: '',
   },
@@ -54,12 +39,7 @@ let bookNames = [
     firstName: 'moshe',
     lastName: 'Cohen',
     phoneNumber: '0549574345',
-    adress: {
-      street: 'HariGolan',
-      number: '43',
-      city: 'Ashdod',
-      country: 'Israel',
-    },
+    adress: 'Isreal',
     email: 'yosi@gmail.com',
     description: '',
   },
@@ -150,41 +130,34 @@ function printDetails(index, divShowDetails) {
       userContect = e;
     }
   });
+  // this is creating p tags for show details {
 
+  //p for name
   let pName = document.createElement('p');
   divShowDetails.appendChild(pName);
   pName.classList.add('nameShow');
-  pName.innerHTML = userContect.firstName + ' ' + userContect.lastName + `<br>`;
-
+  pName.innerHTML = ` ${userContect.firstName} ${userContect.lastName}<br>`;
+  //p for phone number
   let pPhone = document.createElement('p');
   pPhone.classList.add('allShow');
   divShowDetails.appendChild(pPhone);
-  pPhone.innerHTML = userContect.phoneNumber + `<br>`;
-
-  let pStreetAndNum = document.createElement('p');
-  pStreetAndNum.classList.add('allShow');
-  divShowDetails.appendChild(pStreetAndNum);
-  pStreetAndNum.innerHTML = `${userContect.adress.street}  ${userContect.adress.number}<br>`;
-
-  let pCity = document.createElement('p');
-  pCity.classList.add('allShow');
-  divShowDetails.appendChild(pCity);
-  pCity.innerHTML = userContect.adress.city + `<br>`;
-
+  pPhone.innerHTML = `${userContect.phoneNumber}<br>`;
+  //p for country
   let pCountry = document.createElement('p');
   pCountry.classList.add('allShow');
   divShowDetails.appendChild(pCountry);
-  pCountry.innerHTML = userContect.adress.country + `<br>`;
-
+  pCountry.innerHTML = userContect.adress + `<br>`;
+  //p for email 
   let pEmail = document.createElement('p');
   pEmail.classList.add('allShow');
   divShowDetails.appendChild(pEmail);
   pEmail.innerHTML = userContect.email + `<br>`;
-
+  //p for description
   let pDescription = document.createElement('p');
   pDescription.classList.add('allShow');
   divShowDetails.appendChild(pDescription);
   pDescription.innerHTML = userContect.description + `<br>`;
+  //}
 }
 ///create by PS
 
