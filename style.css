@@ -69,7 +69,7 @@ li {
   padding: 0.1em;
 }
 .details {
-  padding: 2%;
+  padding: 1px;
 }
 li:hover {
   background-color: gray;
