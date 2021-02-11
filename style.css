@@ -232,6 +232,7 @@ input,
 	li {
 		align-items: center;
 		font-size: 0.7em;
+		max-width: 1em;
 	}
 	.showDetails {
 		width: 60%;

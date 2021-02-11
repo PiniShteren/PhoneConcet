@@ -419,7 +419,8 @@ function addInpPhone(inputs, value) {
   let place = value !== " " ? value : "PhoneNumber....";
   let input = document.createElement('input');
   inputs.appendChild(input);
-  input.setAttribute('placeholder', place)
+  input.setAttribute('placeholder', place);
+  input.setAttribute('type', 'tel');
   input.onkeyup = function (e) {
     if (e.target.value.match("05[023456]{1}[ -]?\\d{7}")) {
       newObject.phoneNumber = e.target.value;
@@ -470,6 +471,7 @@ function addInpEmail(inputs, value) {
   let input = document.createElement('input');
   inputs.appendChild(input);
   input.setAttribute('placeholder', place);
+  input.setAttribute('type', 'email')
   input.onkeyup = function (e) {
     let inpVal = e.target.value;
     if (inpVal.match("[a-zA-Z0-9-].{4}@gmail.com")) {
