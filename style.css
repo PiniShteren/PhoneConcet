@@ -221,7 +221,7 @@ input,
 	.main-con {
 		/* flex-grow: 1; */
 		/* width: 100%; */
-		min-height: 80.5vh;
+		min-height: 0.5;
 	}
 	#logo {
 		height: 2em;
@@ -234,6 +234,7 @@ input,
 	li {
 		align-items: center;
 		font-size: 0.7em;
+		max-height: 10%;
 	}
 	.showDetails {
 		width: 60%;
