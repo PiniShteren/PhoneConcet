@@ -22,7 +22,8 @@ body {
 	flex-direction: column;
 }
 main {
-	flex-grow: 1; /* for foother to be on bottom */
+	/* for foother to be on bottom */
+	min-height: 80.5vh;
 	display: flex;
 	justify-content: center;
 	align-items: stretch; /* while you have placr streach */
@@ -232,7 +233,6 @@ input,
 	li {
 		align-items: center;
 		font-size: 0.7em;
-		max-width: 1em;
 	}
 	.showDetails {
 		width: 60%;
