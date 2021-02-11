@@ -3,13 +3,10 @@
 
 //variblr which get div from html to evry contects
 let divPrintNames = document.getElementById('booxNames');
+// global variblr which get div for details contect 
+// it's global beacuse i want to renew div from evry func() 
 let divShowDetails;
 
-function updateOb(object) {
-  bookNames.push(object);
-  divPrintNames.innerHTML = '';
-  printNames();
-}
 //this is the array of object context\\
 let bookNames = [
   {
@@ -46,8 +43,42 @@ let bookNames = [
   },
 ];
 
+let bookNamesToPrint = JSON.stringify(bookNames);
+bookNamesToPrint = JSON.parse(bookNamesToPrint);
+// function converTojsonToSave() {
+//   localStorage.setItem('contects', JSON.stringify(bookNames));
+//   let save = JSON.parse(localStorage.getItem('contect'));
+//   console.log(save);
+//   bookNamesToPrint = bookNames;
+// }
+// converTojsonToSave()
+function updateOb(object, index) {
+  debugger
+  // func() to push new contect to my contect object
+  if (index !== " ") {
+    bookNamesToPrint[index] = object;
+  } else {
+    // index is empty and i want to add new contect
+    bookNames.push(object);
+    bookNamesToPrint.push(object);
+  }
+  divPrintNames.innerHTML = "";// renew div contect
+  divAddContect.innerHTML = "";// renew div contect
+  resetNewObject();
+  if (bookNamesToPrint.length > 0) {
+    printNames();// call func() print contect
+    createDivAddContect();
+  } else {
+    // if list is empty
+    let p = document.createElement("p");
+    p.id = "empty";
+    p.innerHTML = "Empty List";
+    divPrintNames.appendChild(p);
+  }
+}
+
 function printNames() {
-  //function that create div for evry contect
+  //function that create li for evry contect
   // and printed it on the page in HTML
 
   function compare(a, b) {
@@ -63,15 +94,13 @@ function printNames() {
     }
     return comparison;
   }
-  bookNames.sort(compare);
-  console.log(bookNames);
-
+  bookNamesToPrint.sort(compare);
   // vairble which create ul for contect {
   let ul = document.createElement('ul');
   divPrintNames.appendChild(ul);
   //}
 
-  for (let i = 0; i < bookNames.length; i++) {
+  for (let i = 0; i < bookNamesToPrint.length; i++) {
     // loop run on the array of contects
 
     // varaible which create li for details
@@ -86,36 +115,38 @@ function printNames() {
     spanPhone.classList.add('phoneContect');
 
     // inner details from booxNames array
-    spanName.innerHTML = `${bookNames[i].firstName} ${bookNames[i].lastName}`;
-    spanPhone.innerHTML = bookNames[i].phoneNumber;
+    spanName.innerHTML = `${bookNamesToPrint[i].firstName} ${bookNamesToPrint[i].lastName}`;
+    spanPhone.innerHTML = bookNamesToPrint[i].phoneNumber;
     li.appendChild(spanName);
     li.appendChild(spanPhone);
 
-    //add event click to td details to show all details
-
-    spanName.addEventListener('click', () => {
-      // function is calling them to
-      //show details contect
-      divShowDetails.innerHTML = '';
-      onClickshowDetails(i);
-    });
-    spanPhone.addEventListener('click', () => {
-      // function is calling them to
-      //show details contect
-      divShowDetails.innerHTML = '';
-      onClickshowDetails(i);
-    });
-    userIcons(li);
+    //call func() for to add event click to open div show details
+    openDetails(spanName, i);
+    openDetails(spanPhone, i);
+    //call func() to show icon dalate contect and edit
+    userIcons(li, i);
   }
 }
 printNames(); //call function
 
-function userIcons(li) {
+function openDetails(span, i) {
+  span.addEventListener('click', () => {
+    // function is calling them to 
+    //show details contect
+    divShowDetails.innerHTML = "";
+    onClickshowDetails(i);
+
+  })
+}
+
+function userIcons(li, i) {
   //function to create td for icons user delete and edit
   let spanIcons = document.createElement('span');
   spanIcons.classList.add('icons');
   let iconDelete = document.createElement('img');
+  addEvent(iconDelete, i, "delete");
   let iconEdit = document.createElement('img');
+  addEvent(iconEdit, i, "edit");
   iconDelete.src = 'images/trash.svg';
   iconEdit.src = 'images/edit.svg';
   spanIcons.appendChild(iconDelete);
@@ -123,15 +154,29 @@ function userIcons(li) {
   li.appendChild(spanIcons);
 }
 
+function addEvent(icon, i, type) {
+  if (type === "delete") {
+    icon.onclick = function () {
+      deleteContect(i);
+    }
+  } else {
+    icon.onclick = function () {
+      editContect(i);
+    }
+  }
+}
+
 function showDetails() {
+  //create div for show details
   let containerChild = document.getElementById('containerChild');
   divShowDetails = document.createElement('div');
   divShowDetails.classList.add('showDetails');
   containerChild.appendChild(divShowDetails);
 }
-showDetails();
+showDetails();//call function
 
 function onClickshowDetails(index) {
+  //index for place contect in array but i using it in function (printDetails) 
   //function to print details on divShow
   let divShowDetails = document.querySelector('.showDetails');
   divShowDetails.style.visibility = 'visible';
@@ -139,40 +184,34 @@ function onClickshowDetails(index) {
   // add event click to divShowDetails for hide again if i click on the window
   divShowDetails.addEventListener('click', function () {
     divShowDetails.style.visibility = 'hidden';
-    divShowDetails.innerHTML = '';
+    divShowDetails.innerHTML = '';//for reset div when user click on other contect
   });
-  printDetails(index, divShowDetails);
+  printDetails(index, divShowDetails);//call function with a callback
 }
 
 function printDetails(index, divShowDetails) {
   //function to print all contect details on the window
-  let userContect = '';
-  bookNames.forEach((e, i, o) => {
-    if (i === index) {
-      // i equl to some li end if i equl to the
-      // index in array
-      userContect = e;
-    }
-  });
-  // this is creating p tags for show details {
+  let userContect = bookNamesToPrint[index];
+  // this is for creating p tags for show details {
 
   //p for name
   let pName = document.createElement('p');
   divShowDetails.appendChild(pName);
   pName.classList.add('nameShow');
   pName.innerHTML = `${userContect.firstName} ${userContect.lastName}<br>`;
-  //p for phone number
-  createPphone(divShowDetails, userContect);
-  //p for country
-  createPcountry(divShowDetails, userContect);
-  //p for email 
-  createPemail(divShowDetails, userContect);
-  //p for description
-  createPdescription(divShowDetails, userContect);
+  //call function to create p for phone number
+  createPphone(userContect);
+  //call function to create p for country
+  createPcountry(userContect);
+  //call function to create p for email 
+  createPemail(userContect);
+  //call function to create p for description
+  createPdescription(userContect);
   //}
 }
 
-function createPphone(divShowDetails, userContect) {
+function createPphone(userContect) {
+  //function to create p with to span for phone  
   let pPhone = document.createElement('p');
   divShowDetails.appendChild(pPhone);
   pPhone.classList.add('allShow');
@@ -186,7 +225,8 @@ function createPphone(divShowDetails, userContect) {
   spanB.innerHTML = `${userContect.phoneNumber}<br>`;
 }
 
-function createPcountry(divShowDetails, userContect) {
+function createPcountry(userContect) {
+  //function to create p for country
   let pCountry = document.createElement('p');
   divShowDetails.appendChild(pCountry);
   pCountry.classList.add('allShow');
@@ -200,7 +240,8 @@ function createPcountry(divShowDetails, userContect) {
   spanB.innerHTML = `${userContect.adress}<br>`;
 }
 
-function createPemail(divShowDetails, userContect) {
+function createPemail(userContect) {
+  //function to create p for email
   let pEmail = document.createElement('p');
   divShowDetails.appendChild(pEmail);
   pEmail.classList.add('allShow');
@@ -214,7 +255,8 @@ function createPemail(divShowDetails, userContect) {
   spanB.innerHTML = `${userContect.email}<br>`;
 }
 
-function createPdescription(divShowDetails, userContect) {
+function createPdescription(userContect) {
+  //function to create p for description
   let pDescription = document.createElement('p');
   divShowDetails.appendChild(pDescription);
   pDescription.classList.add('allShow');
@@ -227,205 +269,180 @@ function createPdescription(divShowDetails, userContect) {
   pDescription.appendChild(spanB);
   spanB.innerHTML = `${userContect.description}<br>`;
 }
+//object for adding new contect
 let newObject = {
-  firstName: "",
-  lastName: "",
-  phoneNumber: "",
-  adress: "",
-  email: "",
-  description: "",
+  firstName: " ",
+  lastName: " ",
+  phoneNumber: " ",
+  adress: " ",
+  email: " ",
+  description: " ",
 }
+function resetNewObject() {
+  newObject = {
+    firstName: " ",
+    lastName: " ",
+    phoneNumber: " ",
+    adress: " ",
+    email: " ",
+    description: " ",
+  }
+}
+//divAddContect to create div for adding contect
+let divAddContect;//global becuse i use it in faw function
+let checkAddContect = false;//global same reason... to know if divaddContect exist 
+let buttonBack;//global becuse i use it in faw function
 
-// updateOb(newObject);
-
-
-let divAddContect;
-let checkAddContect = false;
-
-function DivAddContect() {
-  //function to create div for add contect and button to go back 
+function createDivAddContect() {
+  //function to create div for add contect 
+  //and button to go back 
   //and edd event listener to open  
 
   // create div for add conetct {
   divAddContect = document.createElement('div');
   let containerChild = document.querySelector('.containerChild');
   containerChild.appendChild(divAddContect);
-  divAddContect.classList.add('addContect');
+  divAddContect.classList.add('addContect');// class for css
   //}
-
   //create button to go back {
-  let buttonBack = document.createElement('img');
+  buttonBack = document.createElement('img');
   buttonBack.src = "images/arrow.svg";
   divAddContect.appendChild(buttonBack);
   //} 
-
   //add event listener to open{
   let add = document.querySelector('#add');
   add.addEventListener('click', () => {
-    addContect(buttonBack, add);
+    openAddContect(" ");
   })
   //}
 }
-DivAddContect()
+createDivAddContect()//call function
 
 
-function addContect(buttonBack) {
-  buttonBack.addEventListener('click', function () {
-    divAddContect.style.visibility = 'hidden';
-    checkAddContect = false;
-    divAddContect.innerHTML = ' ';
-    DivAddContect();
-    return
-  })
-  if (!checkAddContect) {
-    checkAddContect = true;
-    // show div addContect
-    divAddContect.style.visibility = 'visible';
+function openAddContect(i) {
+
+  //function get a paremeter for adding event listener to close the div in reset
+  if (!checkAddContect) {//if divAddContect is flag 
+    checkAddContect = true;//to change flag
+    divAddContect.style.visibility = 'visible';//to show div
+    //cretae h1 for div {
     let HdivAddContect = document.createElement('h1');
-    HdivAddContect.innerHTML = "Add Contect";
+    HdivAddContect.innerHTML = i !== " " ? "Edit Contect" : "Add Contect";
     HdivAddContect.classList.add('addLogo')
     divAddContect.appendChild(HdivAddContect);
-    menageAddContect(divAddContect)
+    //}
+
+    menageAddContect(divAddContect, i);//callback get in divAddContect to create all childern
   }
-
-}
-function menageAddContect(divAddContect) {
-  let checkFirstName = true;
-  let checkLastName = false;
-  let checkPhone = false;
-  let checkCountry = false;
-  AddInpFirstName(divAddContect, checkFirstName);
-  AddInpLastName(divAddContect, checkLastName);
-  AddInpPhone(divAddContect, checkPhone);
-  AddInpcountry(divAddContect, checkCountry);
-  // AddInpDescription(divAddContect);
-}
-function AddInpFirstName(divAddContect, checkFirstName) {
-
-  //create input
-  let div = document.createElement('div');
-  div.classList.add('divInp');
-  divAddContect.appendChild(div);
-  let label = document.createElement('label');
-  label.innerHTML = "First Name";
-  div.appendChild(label);
-  let input = document.createElement('input');
-  div.appendChild(input)
-  let inpVal;
-  input.onchange = function (e) {
-    inpVal = e.target.value;
-    if (inpVal.length > 1) {
-      for (let i = 0; i < inpVal.length; i++) {
-        if (inpVal.charAt(i).match(/[a-z]/i)) {
-          checkFirstName = true;
-          continue;
-        } else {
-          checkFirstName = false;
-          break;
-        }
-      }
-    } else {
-      checkFirstName = false;
+  buttonBack.addEventListener('click',
+    function () {
+      divAddContect.style.visibility = 'hidden';
+      checkAddContect = false;
+      divAddContect.innerHTML = '';//renew div
+      i = '';
+      resetNewObject()
+      createDivAddContect();//call function to start again divAddContect
     }
-    if (checkFirstName) {
-      newObject.firstName = inpVal;
+  )
+
+}
+function menageAddContect(divAddContect, i) {
+  let contect = 0;
+  debugger
+  contect = newObject;
+  if (i === 0 || i > 0) {
+    contect = bookNamesToPrint[i];
+  }
+  let inputs = document.createElement('div');
+  inputs.classList.add('inputs');
+  divAddContect.appendChild(inputs);
+  // func() to craete all inputs to add contect
+  // call func() for create elements {
+
+  addInpFirstName(inputs, contect.firstName);
+  addInpLastName(inputs, contect.lastName);
+  addInpPhone(inputs, contect.phoneNumber);
+  addInpCountry(inputs, contect.adress);
+  addInpEmail(inputs, contect.email);
+  addInpDescription(inputs, contect.description);
+  addButton(divAddContect, inputs, i);
+  // }
+
+
+}
+function addInpFirstName(inputs, value) {
+  // create input for first name
+  newObject.firstName = "";
+  let place = value !== " " ? value : "FirstName..."
+  //create input
+  let input = document.createElement('input');
+  inputs.appendChild(input);
+  input.setAttribute('placeholder', place)
+  let inpVal;
+  input.onkeyup = function (e) {
+    inpVal = e.target.value;
+    if (inpVal.match("[a-zA-Z].{2}")) {
+      newObject.firstName = inpVal.charAt(0).toUpperCase() + inpVal.substring(1);
     } else {
+      // if value smaller than 2 letters and 
       newObject.firstName = '';
     }
   }
-
-
+  if (value) {
+    newObject.firstName = value;
+  }
 }
 
-function AddInpLastName(divAddContect, checkLastName) {
-
+function addInpLastName(inputs, value) {
+  newObject.lastName = "";
   //create input
-  let div = document.createElement('div');
-  div.classList.add('divInp');
-  divAddContect.appendChild(div);
-  let label = document.createElement('label');
-  label.innerHTML = "Last Name";
-  div.appendChild(label);
+  let place = value !== " " ? value : "LastName..."
   let input = document.createElement('input');
-  div.appendChild(input)
+  input.setAttribute('placeholder', place)
+  inputs.appendChild(input)
   let inpVal;
-  input.onchange = function (e) {
+  input.onkeyup = function (e) {
     inpVal = e.target.value;
-    if (inpVal.length > 1) {
-      for (let i = 0; i < inpVal.length; i++) {
-        if (inpVal.charAt(i).match(/[a-z]/i)) {
-          checkLastName = true;
-          continue;
-        } else {
-          checkLastName = false;
-          break;
-        }
-      }
-    } else {
-      checkLastName = false;
-    }
-    if (checkLastName) {
-      newObject.lastName = inpVal;
+    if (inpVal.match("[a-zA-Z].{2}")) {
+      newObject.lastName = inpVal.charAt(0).toUpperCase() + inpVal.substring(1);
     } else {
       newObject.lastName = '';
     }
   }
-
-
-}
-
-function AddInpPhone(divAddContect, checkPhone) {
-  let div = document.createElement('div');
-  div.classList.add('divInp');
-  divAddContect.appendChild(div);
-  let label = document.createElement('label');
-  label.innerHTML = "Phone number";
-  div.appendChild(label);
-  let input = document.createElement('input');
-  div.appendChild(input)
-  let inpVal;
-  input.onchange = function (e) {
-    debugger
-    let areaCodePhone = ["050", "052", "054", "055", "057", "059"];
-    inpVal = e.target.value;
-    if (Number(inpVal)) {
-      if (inpVal.length === 10) {
-        let phoneCheck = inpVal.toString().slice(0, 3);
-        areaCodePhone.forEach((e) => {
-          if (phoneCheck === e) {
-            checkPhone = true;
-          }
-        })
-
-      } else {
-        checkPhone = false;
-      }
-    } else {
-      checkPhone = false;
-    }
-    if (checkPhone) {
-      newObject.phoneNumber = inpVal;
-    } else {
-      newObject.phoneNumber = '';
-    }
+  if (value) {
+    newObject.lastName = value;
   }
 }
 
-function AddInpcountry(divAddContect, checkCountry) {
+function addInpPhone(inputs, value) {
+  newObject.phoneNumber = "";
+  let place = value !== " " ? value : "PhoneNumber....";
+  let input = document.createElement('input');
+  inputs.appendChild(input);
+  input.setAttribute('placeholder', place)
+  input.onkeyup = function (e) {
+    if (e.target.value.match("05[023456]{1}[ -]?\\d{7}")) {
+      newObject.phoneNumber = e.target.value;
+    } else {
+      newObject.phoneNumber = "";
+    }
+  }
+  if (value) {
+    newObject.phoneNumber = value;
+  }
+}
 
+function addInpCountry(inputs, value) {
+  newObject.adress = "";
   let countrys = ['Isreal', 'USA'];
-
-  let div = document.createElement('div');
-  div.classList.add('divInp');
-  divAddContect.appendChild(div);
   let select = document.createElement('select');
-  div.appendChild(select);
+  inputs.appendChild(select);
   select.id = 'selectCountry';
   let option = document.createElement('option');
-  option.text = 'Country';
-  option.value = "";
+  option.text = value !== " " ? value : 'Country';
+  option.value = value;
   option.id = "optionCountry";
-  select.appendChild(option)
+  select.appendChild(option);
   countrys.map((e) => {
     let optionC = document.createElement('option');
     optionC.id = 'optionCountry';
@@ -435,11 +452,116 @@ function AddInpcountry(divAddContect, checkCountry) {
   })
   select.onchange = function (e) {
     if (e.target.value.length > 0) {
-      checkCountry = true;
+      check = true;
       newObject.adress = e.target.value;
     } else {
       newObject.adress = '';
-      checkCountry = false;
+      check = false;
     }
   }
+  if (value) {
+    newObject.adress = value;
+  }
+}
+
+function addInpEmail(inputs, value) {
+  newObject.email = "";
+  let place = value !== " " ? value : "Email...";
+  let input = document.createElement('input');
+  inputs.appendChild(input);
+  input.setAttribute('placeholder', place);
+  input.onkeyup = function (e) {
+    let inpVal = e.target.value;
+    if (inpVal.match("[a-zA-Z0-9-].{4}@gmail.com")) {
+      newObject.email = inpVal;
+    } else {
+      newObject.email = "";
+    }
+  }
+  if (value) {
+    newObject.email = value;
+  }
+}
+
+function addInpDescription(inputs, value) {
+  newObject.description = "";
+  let place = value !== " " ? value : "Description...";
+  let textArea = document.createElement('textarea');
+  inputs.appendChild(textArea);
+  textArea.setAttribute('placeholder', place);
+  textArea.onkeyup = function (e) {
+    let inpVal = e.target.value;
+    if (inpVal) {
+      newObject.description = inpVal;
+    } else {
+      newObject.description = "";
+    }
+  }
+  if (value) {
+    newObject.description = value;
+  }
+}
+
+function addButton(divAddContect, inputs, i) {
+
+  let div = document.createElement('div');
+  div.classList.add('divInp');
+  inputs.appendChild(div);
+  let button = document.createElement('button');
+  div.appendChild(button);
+  button.id = 'addContect';
+  button.innerHTML = i !== " " ? "Edit" : "Add";
+  button.disabled = false;
+  button.onclick = function () {
+    debugger
+    if (newObject.firstName.length > 1 &&
+      newObject.lastName.length > 1 &&
+      newObject.phoneNumber.length > 1 &&
+      newObject.adress.length > 1 &&
+      newObject.email.length > 1) {
+      updateOb(newObject, i);
+      divAddContect.style.visibility = 'hidden';
+      checkAddContect = false;
+    }
+  }
+}
+
+function deleteContect(index) {
+
+  var t = window.confirm('Are you sure you want to dalate?')
+  if (t === true) {
+    bookNamesToPrint = bookNamesToPrint.filter((e, i) => i !== index);
+    divPrintNames.innerHTML = "";
+    printNames()
+  }
+  updateOb();
+}
+function editContect(index) {
+
+  openAddContect(index);
+}
+
+function search(e) {
+  debugger
+  let saveContect = JSON.stringify(bookNamesToPrint);
+  saveContect = JSON.parse(saveContect);
+  if (e.target.value) {
+    bookNamesToPrint = bookNamesToPrint.filter((element) => element.firstName.toLowerCase().indexOf(e.target.value.toLowerCase()) >= 0 || element.lastName.toLowerCase().indexOf(e.target.value.toLowerCase()) >= 0);
+    if (bookNamesToPrint) {
+      divPrintNames.innerHTML = "";
+      divShowDetails.innerHTML = "";
+      printNames();
+      createDivAddContect();
+    }
+  } else {
+    bookNamesToPrint = bookNames;
+    divPrintNames.innerHTML = "";
+    divShowDetails.innerHTML = "";
+    printNames();
+    createDivAddContect();
+  }
+}
+document.querySelector("#search").onkeyup = (e) => {
+  console.log(e.target.value);
+  search(e);
 }
