@@ -31,6 +31,7 @@ main {
 .top {
 	position: sticky;
 	top: 0;
+	z-index: 1;
 }
 footer {
 	background-color: #90ee90;
@@ -43,7 +44,6 @@ header {
 }
 #logo {
 	font-family: "Potta One", cursive;
-
 	color: #146686;
 	font-weight: bold;
 	font-size: 3.5em;
@@ -51,17 +51,26 @@ header {
 .boxSearch {
 	display: flex;
 	justify-content: space-between;
-	position: sticky;
-	top: 8;
+	height: 2.5em;
 }
 .searchInput {
-	border: 1px solid black;
+	border: 2px solid black;
 	padding: 0.2em;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 10px;
+	justify-content: space-around;
+	background-color: white;
+	margin: 0.3em;
 }
 #search {
 	border: none;
 	width: 80%;
 	padding: 0.3em;
+	font-size: 0.8em;
+	letter-spacing: 0.01em;
+	font-weight: bold;
 }
 #search:focus {
 	outline: none; /* for not see the border when i presss on search */
@@ -218,10 +227,8 @@ input,
 	}
 }
 @media only screen and (max-width: 580px) {
-	.main-con {
-		/* flex-grow: 1; */
-		/* width: 100%; */
-		min-height: 0.5;
+	body {
+		max-width: 25em;
 	}
 	#logo {
 		height: 2em;
@@ -235,6 +242,7 @@ input,
 		align-items: center;
 		font-size: 0.7em;
 		max-height: 2.7em;
+		padding: 21vh;
 	}
 	.showDetails {
 		width: 60%;
